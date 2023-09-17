@@ -28,7 +28,7 @@ app.use(
     audience: "organize",
     // Replace with your Auth0 Domain
     issuer: `https://${domain}/`,
-    algorithms: ["256"],
+    algorithms: ["RS256"],
   })
 );
 
