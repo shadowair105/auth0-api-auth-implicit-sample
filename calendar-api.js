@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const jwt = require("express-jwt");
 const jwksRsa = require("jwks-rsa");
+const jwt_decode = require("jwt-decode");
 const cors = require("cors");
 
 require("dotenv").config();
@@ -29,6 +30,24 @@ app.use(
     // Replace with your Auth0 Domain
     issuer: `https://${domain}/`,
     algorithms: ["RS256"],
+
+    // Added
+    getToken: function fromHeaderOrQuerystring(req) {
+      console.log(req.headers);
+      if (
+        req.headers.authorization &&
+        req.headers.authorization.split(" ")[0] === "Bearer"
+      ) {
+        var token = req.headers.authorization.split(" ")[1];
+        var decoded = jwt_decode(token);
+        console.log(`Access Token: ${token}`);
+        console.log(`Decoded JWT Token: ${JSON.stringify(decoded, null, 2)}`);
+        return token;
+      } else if (req.query && req.query.token) {
+        return req.query.token;
+      }
+      return null;
+    },
   })
 );
 
